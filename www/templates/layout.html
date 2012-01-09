@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Cams</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="{{ static_url("bootstrap/1.4.0/bootstrap.min.css") }}">
+    <link rel="stylesheet" href="{{ static_url("site.css") }}">
+
+    <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+    {% block scripts %}{% end %}
+  </head>
+
+  <body>  
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="/">Cams</a>
+          <ul class="nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li><a href="/channel/shawn">Girls</a></li>
+            <li><a href="#girls">Guys</a></li>
+            <li><a href="#girls">My Channel</a></li>
+            <li><a href="#tumblr">Tumblr</a></li>
+          </ul>
+           <form action="" class="pull-right">
+            <input class="input-small" type="text" placeholder="Username">
+            <input class="input-small" type="password" placeholder="Password">
+            <button class="btn" type="submit">Sign in</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+        {% block body %}master{% end %}
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>
+          &copy; Company 2011
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>
