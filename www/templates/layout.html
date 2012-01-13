@@ -20,16 +20,8 @@
           <a class="brand" href="/">Cams</a>
           <ul class="nav">
             <li class="active"><a href="/">Home</a></li>
-            <li><a href="/channel/shawn">Girls</a></li>
-            <li><a href="#girls">Guys</a></li>
-            <li><a href="#girls">My Channel</a></li>
-            <li><a href="#tumblr">Tumblr</a></li>
           </ul>
-           <form action="" class="pull-right">
-            <input class="input-small" type="text" placeholder="Username">
-            <input class="input-small" type="password" placeholder="Password">
-            <button class="btn" type="submit">Sign in</button>
-          </form>
+          {% module CurrentUserModule() %}
         </div>
       </div>
     </div>
@@ -42,7 +34,7 @@
       <div class="container">
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>
-          &copy; Company 2011
+          &copy; Company 2012
         </p>
       </div>
     </footer>
