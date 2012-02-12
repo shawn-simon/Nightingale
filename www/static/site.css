@@ -1,26 +1,36 @@
-body {
-    padding-top: 40px;
-    background-color: #eee;
+html, body { }
+body { background: #fff; }
+
+button { cursor: pointer; }
+
+.container { position: relative; }
+
+h1 { margin: 0; padding: 0; }
+h1 a { width: 200px; height: 100px; float: left; background: url(/static/cams.png) 0 0 no-repeat; }
+h1 a span { display: none; }
+
+.userinfo , .userinfo .loginerr  { background: #ffeded; }
+.userinfo { 
+    position: absolute; top: 0; right: 0; 
+    border: 1px solid #f7dede;
+    border-top: 0;
+    padding: 5px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
- .content {
-        background-color: #fff;
-        padding: 20px;
-        margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
-        -webkit-border-radius: 0 0 6px 6px;
-           -moz-border-radius: 0 0 6px 6px;
-                border-radius: 0 0 6px 6px;
-        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-                box-shadow: 0 1px 2px rgba(0,0,0,.15);
-      }
-            .topbar .btn {
-        border: 0;
-      }
-      
-      
-.chat-wrapper
-{
-    height:300px;
+
+.nav ul {
+    margin: 0; padding: 0;
+    list-style: none;
+    float: left;
+    display: none;
 }
+.nav ul li { float: left; margin-right: 10px; }
+
+.content { clear: both; }
+
+
+.models .model { float: left; margin-right: 5px; margin-bottom: 5px; }
 
 .hide { display: none; }

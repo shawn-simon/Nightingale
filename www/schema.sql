@@ -5,7 +5,7 @@ create table user (
     created datetime,
     lastlogin datetime
 );
--- 
+
 create table usercookie (
     userid int,
     cookie varchar(40),

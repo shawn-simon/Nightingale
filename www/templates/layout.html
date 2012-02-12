@@ -1,43 +1,38 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Cams</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <link rel="stylesheet" href="{{ static_url("bootstrap/1.4.0/bootstrap.min.css") }}">
     <link rel="stylesheet" href="{{ static_url("site.css") }}">
-
-    <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script>
+    <script src="{{ static_url("site.js") }}"></script>
+    <script type="text/javascript">
+        var site = new camlib();
+        site.index();
+    </script>
     {% block scripts %}{% end %}
-  </head>
+</head>
+<body>  
+<div class="container">
+    <h1><a href="/"><span>Cams</span></a></h1>
 
-  <body>  
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="/">Cams</a>
-          <ul class="nav">
-            <li class="active"><a href="/">Home</a></li>
-          </ul>
-          {% module CurrentUserModule() %}
-        </div>
-      </div>
+    <div class="userinfo">
+    {% module UserInfoModule() %}
+    {% module MicroLoginModule() %}
     </div>
-    
-    <div class="container">
+     
+    <div class="nav">
+        <ul>
+            <li class="active"><a href="/">Browse</a></li>
+            <li class="active"><a href="/">Wiki</a></li>
+        </ul>
+    </div>
+      
+    <div class="content">
         {% block body %}master{% end %}
     </div>
-
-    <footer class="footer">
-      <div class="container">
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>
-          &copy; Company 2012
-        </p>
-      </div>
-    </footer>
-
-  </body>
+</div>
+</body>
 </html>

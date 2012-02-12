@@ -12,6 +12,7 @@ settings = {
     'ui_modules': nightingale.uimodules,
     'login_url': r"/login",
     'cookie_secret': '3dj1wnExSV6zvypr9y6KFbdDfxwkL0g7ky8VLUWJP3s=',
+    'autoescape': None,
     'debug': True
 }
 application = tornado.web.Application(nightingale.handlers.get_routes(), **settings)

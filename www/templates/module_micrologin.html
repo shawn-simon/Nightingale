@@ -1,0 +1,8 @@
+<form action="/login" method="post" class="login">
+    {{ xsrf_form_html() }}
+    <input name="user" type="text" placeholder="Username" value="kdeloach" />
+    <input name="pass" type="password" placeholder="Password" value="qwerasdf" />
+    <button class="login-btn btn" type="submit">Login</button>
+    <span class="loginerr">{{ escape(loginerr) }}</span>
+    | <a href="/register">Sign Up!</a>
+</form>

@@ -1,7 +1,8 @@
-﻿from datetime import datetime, timedelta
-import json
-from tornado.web import RequestHandler, StaticFileHandler
-from nightingale.models import User, OnlineModels
+﻿import json
+import urllib
+from tornado.web import HTTPError, RequestHandler, StaticFileHandler
+from nightingale.models import LoginHandlerLogic, OnlineModels, User
+from nightingale.uimodules import MicroLoginModule, UserInfoModule
 
 def get_routes():
     return [
@@ -10,49 +11,81 @@ def get_routes():
         (r"/login", LoginHandler),
         (r"/logout", LoginHandler),
         (r"/service", WebAPIHandler),
-        (r"/service/(get_online_models)", WebAPIHandler),
+        (r"/service/(.+)", WebAPIHandler),
         (r"/announce", VuzeHandler),
         (r"/scrape", VuzeHandler)
     ]
 
+    
 class BaseHandler(RequestHandler):
     def get_current_user(self):
         return User.getByCookie(self.get_secure_cookie('user'))
     
+    
 class LoginHandler(BaseHandler):
     def get(self):
-        if self.request.uri.endswith('logout'):
+        if 'logout' in self.request.uri:
             self.clear_all_cookies()
-        self.redirect('/')
+        if self.get_argument('partial', False):
+            logincontrol = MicroLoginModule(self)
+            html = dict(userinfo=logincontrol.render(force=True))
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(dict(html=html)))
+        else:
+            self.redirect('/')
         
     def post(self):
-        if ('user' not in self.request.arguments or 
-            'pass' not in self.request.arguments):
-            return self.failedLogin()
-        user = User.getByName(self.get_argument('user'))
-        if not user:
-            return self.failedLogin()
-        if not user.passwordMatches(self.get_argument('pass')):
-            return self.failedLogin()
-        uid = user.createUID()
-        user.addCookie(uid, expires=datetime.utcnow() + timedelta(1))
-        self.set_secure_cookie('user', uid)
+        login = LoginHandlerLogic()
+        login.tryLogin(self)        
+        
+    def successfulLogin(self, user):
         self.redirect('/')
         
-    def failedLogin(self):
-        self.redirect('/')
+    def failedLogin(self, reason=None):
+        if reason is None:
+            self.redirect('/')
+        else:
+            self.redirect('/?' + urllib.urlencode(dict(loginerr=reason)))
+    
     
 class WebAPIHandler(BaseHandler):
     def get(self, action=None):
+        if action is None:
+            self.write('<ul>')
+            self.write('<li><a href="/service/get_online_models">get_online_models</a></li>')
+            self.write('</ul>')
+            return
         if action == 'get_online_models':
             self.set_header('Content-Type', 'application/json')
             self.write(json.dumps([model.__dict__ for model in OnlineModels().getOnlineModels()]))
         else:
-            self.write("<p><a href=\"/service/get_online_models\">get_online_models</a></p>")
+            raise HTTPError(501)
+            
+    def post(self, action=None):
+        if action == 'login':
+            login = LoginHandlerLogic()
+            login.tryLogin(self)    
+        else:
+            raise HTTPError(501)
+            
+    def successfulLogin(self, user):
+        usercontrol = UserInfoModule(self)
+        html = dict(userinfo=usercontrol.render(user))
+        self.set_header('Content-Type', 'application/json')
+        self.write(json.dumps(dict(id=user.id, name=user.name, html=html)))
+        
+    def failedLogin(self, reason=None):
+        self.set_header('Content-Type', 'application/json')
+        if reason is None:
+            self.write(json.dumps(dict(loginerr='Login failed')))
+        else:
+            self.write(json.dumps(dict(loginerr=reason)))
+        
         
 class OnlineModelListingsHandler(BaseHandler):
     def get(self):
         self.render('index.html', models=OnlineModels().getOnlineModels())
+    
     
 class VuzeHandler(RequestHandler):
     """Prevent Vuze discovery service noise in console."""
