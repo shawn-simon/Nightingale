@@ -16,6 +16,7 @@ class User:
         self.hash = hash
         self.created = created
         self.lastlogin = lastlogin
+        self.status = 'offline'
         
     @classmethod
     def getByCookie(cls, cookie):

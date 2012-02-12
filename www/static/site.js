@@ -27,23 +27,31 @@ camlib.prototype.addEventHandlers = function() {
                 self.replaceHtml(data.html);
             }
             if(data.loginerr) {
-                loginerr.text(data.loginerr);
-                loginerr.effect('highlight', {color: '#ff0000'}, 1000);
+                self.showLoginError(data.loginerr);
                 return;
             }
+        }).error(function() {
+            self.showLoginError('Try again later');
         });
     });
     
     $('.logout').live('click', function(e) {
         e.preventDefault();
-        console.log('logging out...');
         $.get('/logout', {partial: true}, function(data) {
             if(data.html) {
                 self.replaceHtml(data.html);
             }
-            
+        }).error(function() {
+            self.showLoginError('Try again later');
         });
     });
+};
+
+camlib.prototype.showLoginError = function(msg) {
+    if(loginerr = $('.login .loginerr')) {
+        loginerr.text(msg);
+        loginerr.effect('highlight', {color: '#ff0000'}, 1000);
+    }
 };
 
 camlib.prototype.refreshModels = function() {

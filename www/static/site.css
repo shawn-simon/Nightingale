@@ -9,7 +9,7 @@ h1 { margin: 0; padding: 0; }
 h1 a { width: 200px; height: 100px; float: left; background: url(/static/cams.png) 0 0 no-repeat; }
 h1 a span { display: none; }
 
-.userinfo , .userinfo .loginerr  { background: #ffeded; }
+.userinfo, .userinfo .loginerr  { background: #ffeded; }
 .userinfo { 
     position: absolute; top: 0; right: 0; 
     border: 1px solid #f7dede;
@@ -19,6 +19,10 @@ h1 a span { display: none; }
     -moz-border-radius: 10px;
     border-radius: 10px;
 }
+
+.userinfo .status { padding-left: 18px; background-position: 0 50%; background-repeat: no-repeat; }
+.userinfo .status.online { background-image: url(/static/online.png); }
+.userinfo .status.offline { background-image: url(/static/offline.png); }
 
 .nav ul {
     margin: 0; padding: 0;
