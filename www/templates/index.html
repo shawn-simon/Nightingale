@@ -1,40 +1,7 @@
 {% extends "layout.html" %}
 
-{% block scripts %}
-<script type="text/javascript">
-    $(document).ready(function() {
-        return;
-        setInterval(function() {
-            $.get('/service/get_online_models', function(data) {
-                $('.models').html('');
-                $.each(data, function(i, item) {
-                    $('.models').append(''
-                        + '<div class="model">'
-                        + '    <div class="img">'
-                        + '        <a href="/' + item.name + '"><img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" /></a>'
-                        + '    </div>'
-                        + '    <div class="name">'
-                        + '        <a href="/' + item.name + '">' + item.name + '</a>'
-                        + '    </div>'
-                        + '</div>');
-                });
-            });
-        }, 1000);
-    });
-</script>
-{% end %}
-
 {% block body %}
 <div class="models">
-    {% for model in models %}
-        <div class="model">
-            <div class="img">
-                <a href="/{{model.name}}"><img src="{{model.thumb}}" width="100" height="100" alt="{{model.name}}" title="{{model.name}}" /></a>
-            </div>
-            <div class="name">
-                <a href="/{{model.name}}">{{model.name}}</a>
-            </div>
-        </div>
-    {% end %}
+    {% module HomeModelsList() %}
 </div>
 {% end %}

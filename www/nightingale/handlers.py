@@ -2,7 +2,7 @@
 import urllib
 from tornado.web import HTTPError, RequestHandler, StaticFileHandler
 from nightingale.models import LoginHandlerLogic, OnlineModels, User
-from nightingale.uimodules import MicroLoginModule, UserInfoModule
+from nightingale.uimodules import HomeModelsList, MicroLoginModule, UserInfoModule
 
 def get_routes():
     return [
@@ -84,7 +84,13 @@ class WebAPIHandler(BaseHandler):
         
 class OnlineModelListingsHandler(BaseHandler):
     def get(self):
-        self.render('index.html', models=OnlineModels().getOnlineModels())
+        if self.get_argument('partial', False):
+            modelscontrol = HomeModelsList(self)
+            html = dict(models=modelscontrol.render())
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(dict(html=html)))
+        else:
+            self.render('index.html')
     
     
 class VuzeHandler(RequestHandler):

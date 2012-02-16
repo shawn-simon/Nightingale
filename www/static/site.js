@@ -13,14 +13,22 @@ camlib.prototype.addEventHandlers = function() {
     
     //setInterval(this.refreshModels, 1000);
     
+    $('h1.home a').click(function(e) {
+        e.preventDefault();
+        $.get('/', {partial: true}, function(data) {
+            if(data.html) {
+                self.replaceHtml(data.html);
+            }
+        });
+    });
+    
     $('.login .login-btn').live('click', function(e) {
         e.preventDefault();
         
         var postvars = {};
         $('.login input').each(function(i, o) { postvars[o.name] = $(o).val(); });
         
-        var loginerr = $('.login .loginerr');
-        loginerr.hide();
+        $('.login .loginerr').hide();
         
         $.post('/service/login', postvars, function(data) {
             if(data.html) {
