@@ -15,7 +15,7 @@ camlib.prototype.addEventHandlers = function() {
     
     $('h1.home a').click(function(e) {
         e.preventDefault();
-        $.get('/', {partial: true}, function(data) {
+        $.get('/.json', function(data) {
             if(data.html) {
                 self.replaceHtml(data.html);
             }
@@ -25,12 +25,9 @@ camlib.prototype.addEventHandlers = function() {
     $('.login .login-btn').live('click', function(e) {
         e.preventDefault();
         
-        var postvars = {};
-        $('.login input').each(function(i, o) { postvars[o.name] = $(o).val(); });
-        
         $('.login .loginerr').hide();
         
-        $.post('/service/login', postvars, function(data) {
+        $.post('/login.json', self.getPostVars('.login input'), function(data) {
             if(data.html) {
                 self.replaceHtml(data.html);
             }
@@ -45,7 +42,7 @@ camlib.prototype.addEventHandlers = function() {
     
     $('.logout').live('click', function(e) {
         e.preventDefault();
-        $.get('/logout', {partial: true}, function(data) {
+        $.get('/logout.json', function(data) {
             if(data.html) {
                 self.replaceHtml(data.html);
             }
@@ -79,10 +76,16 @@ camlib.prototype.refreshModels = function() {
     });
 };
 
+camlib.prototype.getPostVars = function(target) {
+    var result = {};
+    $(target).each(function(i, o) { result[o.name] = $(o).val(); });
+    return result;
+};
+
 camlib.prototype.replaceHtml = function(data) {
-    for(k in data) {
-        if(elem = $('.' + k)) {
-            elem.html(data[k]);
+    $.each(data, function(i, row) {
+        if(elem = $(row.target)) {
+            elem.html(row.html);
         }
-    }
+    });
 }

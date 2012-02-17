@@ -1,16 +1,20 @@
-﻿import json
+﻿from datetime import datetime, timedelta
+import json
 import urllib
 from tornado.web import HTTPError, RequestHandler, StaticFileHandler
-from nightingale.models import LoginHandlerLogic, OnlineModels, User
-from nightingale.uimodules import HomeModelsList, MicroLoginModule, UserInfoModule
+from nightingale.models import OnlineModels, User
+from nightingale.uimodules import ListModelsModule, MicroLoginModule, UserInfoModule
 
 def get_routes():
     return [
         (r"/static/(.*)", StaticFileHandler, {'path': 'static'}),
-        (r"/", OnlineModelListingsHandler),
-        (r"/login", LoginHandler),
-        (r"/logout", LoginHandler),
-        (r"/service", WebAPIHandler),
+        (r"/", IndexHandler),
+        (r"/\.json", IndexHandler, dict(context='json')),
+        (r"/login/?", LoginHandler),
+        (r"/login/?\.json", LoginHandler, dict(context='json')),
+        (r"/logout/?", LogoutHandler),
+        (r"/logout/?\.json", LogoutHandler, dict(context='json')),
+        (r"/service/?", WebAPIHandler),
         (r"/service/(.+)", WebAPIHandler),
         (r"/announce", VuzeHandler),
         (r"/scrape", VuzeHandler)
@@ -23,29 +27,69 @@ class BaseHandler(RequestHandler):
     
     
 class LoginHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+
     def get(self):
-        if 'logout' in self.request.uri:
-            self.clear_all_cookies()
-        if self.get_argument('partial', False):
-            logincontrol = MicroLoginModule(self)
-            html = dict(userinfo=logincontrol.render(force=True))
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(dict(html=html)))
-        else:
-            self.redirect('/')
-        
-    def post(self):
-        login = LoginHandlerLogic()
-        login.tryLogin(self)        
-        
-    def successfulLogin(self, user):
         self.redirect('/')
         
-    def failedLogin(self, reason=None):
-        if reason is None:
+    def post(self):
+        if ('user' not in self.request.arguments or 
+            'pass' not in self.request.arguments):
+            return self.failedLogin(reason='Missing arguments')
+        user = User.getByName(self.get_argument('user'))
+        if not user:
+            return self.failedLogin(reason='Invalid username')
+        if not user.passwordMatches(self.get_argument('pass')):
+            return self.failedLogin(reason='Invalid password')
+        uid = user.createUID()
+        user.addCookie(uid, expires=datetime.utcnow() + timedelta(1))
+        self.set_secure_cookie('user', uid)
+        self.successfulLogin(user) 
+        
+    def successfulLogin(self, user):
+        if self.context == 'json':
+            usercontrol = UserInfoModule(self)
+            result = dict(
+                id=user.id,
+                name=user.name,
+                html=[
+                    dict(target='.userinfo', html=usercontrol.render(user))
+                ]
+            )
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(result))
+        else:
             self.redirect('/')
+        
+    def failedLogin(self, reason='Login failed'):
+        if self.context == 'json':
+            result = dict(
+                reason=reason
+            )
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(result))
         else:
             self.redirect('/?' + urllib.urlencode(dict(loginerr=reason)))
+    
+    
+class LogoutHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+        
+    def get(self):
+        self.clear_all_cookies()
+        if self.context == 'json':
+            logincontrol = MicroLoginModule(self)
+            result = dict(
+                html=[
+                    dict(target='.userinfo', html=logincontrol.render(force=True))
+                ]
+            )
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(result))
+        else:
+            self.redirect('/')
     
     
 class WebAPIHandler(BaseHandler):
@@ -61,34 +105,21 @@ class WebAPIHandler(BaseHandler):
         else:
             raise HTTPError(501)
             
-    def post(self, action=None):
-        if action == 'login':
-            login = LoginHandlerLogic()
-            login.tryLogin(self)    
-        else:
-            raise HTTPError(501)
-            
-    def successfulLogin(self, user):
-        usercontrol = UserInfoModule(self)
-        html = dict(userinfo=usercontrol.render(user))
-        self.set_header('Content-Type', 'application/json')
-        self.write(json.dumps(dict(id=user.id, name=user.name, html=html)))
         
-    def failedLogin(self, reason=None):
-        self.set_header('Content-Type', 'application/json')
-        if reason is None:
-            self.write(json.dumps(dict(loginerr='Login failed')))
-        else:
-            self.write(json.dumps(dict(loginerr=reason)))
-        
-        
-class OnlineModelListingsHandler(BaseHandler):
+class IndexHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+    
     def get(self):
-        if self.get_argument('partial', False):
-            modelscontrol = HomeModelsList(self)
-            html = dict(models=modelscontrol.render())
+        if self.context == 'json':
+            models = ListModelsModule(self)
+            result = dict(
+                html=[
+                    dict(target='.models', html=models.render())
+                ]
+            )
             self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(dict(html=html)))
+            self.write(json.dumps(result))
         else:
             self.render('index.html')
     

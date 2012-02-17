@@ -1,5 +1,4 @@
-﻿from datetime import datetime, timedelta
-import random
+﻿import random
 import uuid
 import bcrypt
 from nightingale.database import db
@@ -53,22 +52,6 @@ class User:
     def passwordMatches(self, pwd):
         return bcrypt.hashpw(pwd, self.hash) == self.hash
         
-        
-class LoginHandlerLogic:
-    def tryLogin(self, handler):
-        if ('user' not in handler.request.arguments or 
-            'pass' not in handler.request.arguments):
-            return handler.failedLogin(reason='Missing arguments')
-        user = User.getByName(handler.get_argument('user'))
-        if not user:
-            return handler.failedLogin(reason='Invalid username')
-        if not user.passwordMatches(handler.get_argument('pass')):
-            return handler.failedLogin(reason='Invalid password')
-        uid = user.createUID()
-        user.addCookie(uid, expires=datetime.utcnow() + timedelta(1))
-        handler.set_secure_cookie('user', uid)
-        handler.successfulLogin(user)
-
     
 class OnlineModels:
     def getOnlineModels(self):

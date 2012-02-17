@@ -1,7 +1,7 @@
 from tornado.web import UIModule
 from nightingale.models import OnlineModels
 
-class HomeModelsList(UIModule):
+class ListModelsModule(UIModule):
     def render(self):
         return self.render_string('module_homemodelslist.html', models=OnlineModels().getOnlineModels())
 
