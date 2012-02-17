@@ -14,8 +14,6 @@ def get_routes():
         (r"/login/?\.json", LoginHandler, dict(context='json')),
         (r"/logout/?", LogoutHandler),
         (r"/logout/?\.json", LogoutHandler, dict(context='json')),
-        (r"/service/?", WebAPIHandler),
-        (r"/service/(.+)", WebAPIHandler),
         (r"/announce", VuzeHandler),
         (r"/scrape", VuzeHandler)
     ]
@@ -90,20 +88,6 @@ class LogoutHandler(BaseHandler):
             self.write(json.dumps(result))
         else:
             self.redirect('/')
-    
-    
-class WebAPIHandler(BaseHandler):
-    def get(self, action=None):
-        if action is None:
-            self.write('<ul>')
-            self.write('<li><a href="/service/get_online_models">get_online_models</a></li>')
-            self.write('</ul>')
-            return
-        if action == 'get_online_models':
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps([model.__dict__ for model in OnlineModels().getOnlineModels()]))
-        else:
-            raise HTTPError(501)
             
         
 class IndexHandler(BaseHandler):
@@ -112,11 +96,8 @@ class IndexHandler(BaseHandler):
     
     def get(self):
         if self.context == 'json':
-            models = ListModelsModule(self)
             result = dict(
-                html=[
-                    dict(target='.models', html=models.render())
-                ]
+                models=[model.__dict__ for model in OnlineModels().getOnlineModels()]
             )
             self.set_header('Content-Type', 'application/json')
             self.write(json.dumps(result))

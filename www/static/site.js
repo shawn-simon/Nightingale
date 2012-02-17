@@ -11,22 +11,16 @@ camlib.prototype.index = function() {
 camlib.prototype.addEventHandlers = function() {
     var self = this;
     
-    //setInterval(this.refreshModels, 1000);
+    //setInterval(function() { self.reloadIndex(); }, 1000);
     
     $('h1.home a').click(function(e) {
         e.preventDefault();
-        $.get('/.json', function(data) {
-            if(data.html) {
-                self.replaceHtml(data.html);
-            }
-        });
+        self.reloadIndex();
     });
     
     $('.login .login-btn').live('click', function(e) {
         e.preventDefault();
-        
         $('.login .loginerr').hide();
-        
         $.post('/login.json', self.getPostVars('.login input'), function(data) {
             if(data.html) {
                 self.replaceHtml(data.html);
@@ -59,21 +53,32 @@ camlib.prototype.showLoginError = function(msg) {
     }
 };
 
-camlib.prototype.refreshModels = function() {
-    $.get('/service/get_online_models', function(data) {
-        $('.models').html('');
-        $.each(data, function(i, item) {
-            $('.models').append(''
-                + '<div class="model">'
-                + '    <div class="img">'
-                + '        <a href="/' + item.name + '"><img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" /></a>'
-                + '    </div>'
-                + '    <div class="name">'
-                + '        <a href="/' + item.name + '">' + item.name + '</a>'
-                + '    </div>'
-                + '</div>');
-        });
+camlib.prototype.reloadIndex = function() {
+    var self = this;
+    $.get('/.json', function(data) {
+        if(data.html) {
+            self.replaceHtml(data.html);
+        }
+        if(data.models) {
+            self.updateModels(data.models);
+        }
     });
+};
+
+camlib.prototype.updateModels = function(models) {
+    $('.models').html('');
+    var html = '';
+    $.each(models, function(i, item) {
+        html += '<div class="model">'
+             + '    <div class="img">'
+             + '        <a href="/' + item.name + '"><img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" /></a>'
+             + '    </div>'
+             + '    <div class="name">'
+             + '        <a href="/' + item.name + '">' + item.name + '</a>'
+             + '    </div>'
+             + '</div>';
+    });
+    $('.models').append(html);
 };
 
 camlib.prototype.getPostVars = function(target) {
