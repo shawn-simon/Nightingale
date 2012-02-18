@@ -2,7 +2,7 @@
 import json
 import urllib
 from tornado.web import HTTPError, RequestHandler, StaticFileHandler
-from nightingale.models import OnlineModels, User
+from nightingale.models import User
 from nightingale.uimodules import ListModelsModule, MicroLoginModule, UserInfoModule
 
 def get_routes():
@@ -97,7 +97,7 @@ class IndexHandler(BaseHandler):
     def get(self):
         if self.context == 'json':
             result = dict(
-                models=[model.__dict__ for model in OnlineModels().getOnlineModels()]
+                models=[model.__dict__ for model in User.getOnlineModels()]
             )
             self.set_header('Content-Type', 'application/json')
             self.write(json.dumps(result))

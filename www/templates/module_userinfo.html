@@ -1,4 +1,4 @@
-Logged in as <a href="/profile/{{ user.id }}/{{ user.name }}">{{ user.name }}</a>
+Logged in as <a href="/profile/{{ user.id }}/{{ user.name }}" class="profile {{ user.namecss }}">{{ user.name }}</a>
  | <a href="" class="status {{ user.status }}">{{ user.status.title() }}</a>
  | <a href="/settings">Settings</a>
  | <a href="/logout" class="logout">Logout</a>

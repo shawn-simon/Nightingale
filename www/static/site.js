@@ -74,7 +74,7 @@ camlib.prototype.updateModels = function(models) {
              + '        <a href="/' + item.name + '"><img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" /></a>'
              + '    </div>'
              + '    <div class="name">'
-             + '        <a href="/' + item.name + '">' + item.name + '</a>'
+             + '        <a href="/' + item.name + '" class="' + item.namecss + '">' + item.name + '</a>'
              + '    </div>'
              + '</div>';
     });

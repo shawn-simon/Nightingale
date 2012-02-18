@@ -23,6 +23,7 @@ h1 a span { display: none; }
 .userinfo .status { padding-left: 18px; background-position: 0 50%; background-repeat: no-repeat; }
 .userinfo .status.online { background-image: url(/static/online.png); }
 .userinfo .status.offline { background-image: url(/static/offline.png); }
+.userinfo .profile { text-decoration: none; }
 
 .nav ul {
     margin: 0; padding: 0;
@@ -34,7 +35,52 @@ h1 a span { display: none; }
 
 .content { clear: both; }
 
+.models .model {
+    float: left; 
+    margin-right: 5px; 
+    margin-bottom: 5px; 
+    width: 100px; 
+    height: 120px; 
+    overflow: hidden; 
+    background: #fff0f0;
+    line-height: 12px;
+}
+.models .model a { text-decoration: none; }
+.models .model .name { text-indent: 5px; }
 
-.models .model { float: left; margin-right: 5px; margin-bottom: 5px; }
+.f0 { font-family: Arial, Helvetica, sans-serif; }
+.f1 { font-family: Arial Black, Gadget, sans-serif; }
+.f2 { font-family: Comic Sans MS, cursive; }
+.f3 { font-family: Courier New, monospace; }
+.f4 { font-family: Georgia, serif; }
+.f5 { font-family: Impact, Charcoal, sans-serif; }
+.f6 { font-family: Lucida Console, Monaco, monospace; }
+.f7 { font-family: Lucida Sans Unicode, Lucida Grande, sans-serif; }
+.f8 { font-family: Palatino Linotype, Book Antiqua, Palatino, serif; }
+.f9 { font-family: Tahoma, Geneva, sans-serif; }
+.f10 { font-family: Times New Roman, Times, serif; }
+.f11 { font-family: Trebuchet MS, sans-serif; }
+.f12 { font-family: Verdana, Geneva, sans-serif; }
+.f13 { font-family: MS Sans Serif, Geneva, sans-serif; }
+.f14 { font-family: MS Serif, New York, serif; }
+
+.c0 { color: #000; }
+.c1 { color: #f00; }
+.c2 { color: #fcf; }
+.c3 { color: #c9c; }
+.c4 { color: #ccf; }
+.c5 { color: #90f; }
+.c6 { color: #03f; }
+.c7 { color: #336; }
+.c8 { color: #cff; }
+.c9 { color: #0cf; }
+.c10 { color: #9cc; }
+.c11 { color: #cfc; }
+.c12 { color: #9c9; }
+.c13 { color: #ffc; }
+.c14 { color: #f60; }
+.c15 { color: #c99; }
+.c16 { color: #fcc; }
+
 
 .hide { display: none; }

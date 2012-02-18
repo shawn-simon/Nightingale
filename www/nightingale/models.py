@@ -1,26 +1,28 @@
-﻿import random
+﻿import bcrypt
+from operator import attrgetter
+import random
 import uuid
-import bcrypt
 from nightingale.database import db
 
-class Model:
-    def __init__(self, name):
-        self.name = name
-        self.thumb = 'static/thumbs/' + name + '.jpg'
-
 class User:
-    def __init__(self, id=0, name='', hash='', created=None, lastlogin=None):
+    def __init__(self, id=0, usertype='', name='', namecss='', hash='', created=None, lastlogin=None, status=None):
         self.id = id
+        self.usertype = usertype
         self.name = name
         self.hash = hash
         self.created = created
         self.lastlogin = lastlogin
-        self.status = 'offline'
+        self.status = status if status else 'offline'
+        #self.thumb = 'static/thumbs/' + name + '.jpg'
+        self.thumb = 'static/girl.png'
+        #self.namecss = namecss if namecss else 'f' + str(random.randint(0, 14)) + ' c' + str(random.randint(0, 16))
+        self.namecss = namecss if namecss else 'f0 c0'
+        self.score = random.randint(0, 100)
         
     @classmethod
     def getByCookie(cls, cookie):
         result = db.execute("""
-            select u.id, u.name, u.hash, u.created, u.lastlogin 
+            select u.id, u.name, u.namecss, u.hash, u.created, u.lastlogin, u.status
             from user u inner join usercookie uc on uc.userid = u.id
             where uc.cookie = :cookie and uc.expires > datetime()
             """, cookie=cookie)
@@ -32,13 +34,23 @@ class User:
     @classmethod
     def getByName(cls, name):
         result = db.execute("""
-            select u.id, u.name, u.hash, u.created, u.lastlogin 
+            select u.id, u.name, u.namecss, u.hash, u.created, u.lastlogin, u.status
             from user u where u.name = :name
             """, name=name)
         row = result.first()
         if not row:
             return None
         return User(**row)
+        
+    @classmethod
+    def getOnlineModels(cls):
+        result = db.execute("""
+            select u.id, u.name, u.namecss, u.hash, u.created, u.lastlogin, u.status
+            from user u where u.usertype = 'model' and u.status = 'online'
+            """)
+        models = [User(**row) for row in result.fetchall()]
+        models = sorted(models, key=attrgetter('score', 'name'))
+        return models
         
     def createUID(self):
         return uuid.uuid4().hex
@@ -52,11 +64,4 @@ class User:
     def passwordMatches(self, pwd):
         return bcrypt.hashpw(pwd, self.hash) == self.hash
         
-    
-class OnlineModels:
-    def getOnlineModels(self):
-        lst = ['Chrysanthemum', 'Desert', 'Hydrangeas',  'Jellyfish', 'Koala', 'Lighthouse', 'Penguins', 'Tulips']
-        random.shuffle(lst)
-        return [Model(lst[random.randint(0, len(lst) -1)]) for n in range(0, 42)]
-
-        
+     
