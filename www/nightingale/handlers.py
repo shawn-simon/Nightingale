@@ -15,13 +15,29 @@ def get_routes():
         (r"/logout/?", LogoutHandler),
         (r"/logout/?\.json", LogoutHandler, dict(context='json')),
         (r"/announce", VuzeHandler),
-        (r"/scrape", VuzeHandler)
+        (r"/scrape", VuzeHandler),
+        (r"/(.+)", ModelHandler)
     ]
 
     
 class BaseHandler(RequestHandler):
     def get_current_user(self):
         return User.getByCookie(self.get_secure_cookie('user'))
+    
+    
+class IndexHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+    
+    def get(self):
+        if self.context == 'json':
+            result = dict(
+                models=[model.__dict__ for model in User.getOnlineModels()]
+            )
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(result))
+        else:
+            self.render('index.html')
     
     
 class LoginHandler(BaseHandler):
@@ -88,22 +104,10 @@ class LogoutHandler(BaseHandler):
             self.write(json.dumps(result))
         else:
             self.redirect('/')
-            
-        
-class IndexHandler(BaseHandler):
-    def initialize(self, context=None):
-        self.context = context
     
-    def get(self):
-        if self.context == 'json':
-            result = dict(
-                models=[model.__dict__ for model in User.getOnlineModels()]
-            )
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result))
-        else:
-            self.render('index.html')
-    
+class ModelHandler(BaseHandler):
+    def get(self, name):
+        self.write('viewing model: ' + name)
     
 class VuzeHandler(RequestHandler):
     """Prevent Vuze discovery service noise in console."""
