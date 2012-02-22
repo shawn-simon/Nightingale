@@ -4,6 +4,10 @@ import random
 import uuid
 from nightingale.database import db
 
+class EmptyObject:
+    """Necessary for anonymous objects that need a __dict__ attribute (ex. JSON responses)"""
+    pass
+
 class User:
     def __init__(self, id=0, usertype='', name='', namecss='', hash='', created=None, lastlogin=None, status=None):
         self.id = id
