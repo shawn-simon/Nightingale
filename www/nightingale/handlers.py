@@ -15,6 +15,8 @@ def get_routes():
         (r"/login/?\.json", LoginHandler, dict(context='json')),
         (r"/logout/?", LogoutHandler),
         (r"/logout/?\.json", LogoutHandler, dict(context='json')),
+        (r"/users/?", UsersHandler),
+        (r"/users/?\.json", UsersHandler, dict(context='json')),
         (r"/announce", VuzeHandler),
         (r"/scrape", VuzeHandler),
         (r"/(.+)", ModelHandler)
@@ -104,6 +106,17 @@ class LogoutHandler(BaseHandler):
 class ModelHandler(BaseHandler):
     def get(self, name):
         self.write('viewing model: ' + name)
+    
+    
+class UsersHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+    
+    def get(self):
+        if self.context == 'json':
+            print 'json'
+        else:
+            self.render('users.html', users=User.getAllUsers())
     
     
 class VuzeHandler(RequestHandler):

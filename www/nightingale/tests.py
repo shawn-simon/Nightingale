@@ -3,6 +3,7 @@ from unittest import TestCase
 import uuid
 import bcrypt
 from nightingale.models import User
+from nightingale.simulation import randusername
         
 class TestCrypt(TestCase):
     def test_basic(self):
@@ -34,4 +35,9 @@ class  TestUser(TestCase):
         u.addCookie(uid, expires)
         self.assertEqual(None, User.getByCookie(uid))
       
-      
+    def test_simulation1(self):
+        self.assertNotEqual('', randusername());
+        self.assertNotEqual(None, randusername());
+        #for n in range(100):
+            #print randusername()
+            
