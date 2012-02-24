@@ -1,7 +1,5 @@
 {% extends "layout.html" %}
 
-{% block body %}
-<div class="models">
-    {% module ListModelsModule() %}
-</div>
+{% block scripts %}
+<script type="text/javascript">$(function(){site.reloadIndex();});</script>
 {% end %}

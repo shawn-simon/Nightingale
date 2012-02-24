@@ -9,9 +9,9 @@ class EmptyObject:
     pass
 
 class User:
-
     def __init__(self, id=0, usertype='', name='', namecss='', hash='', created=None, lastlogin=None, status=None):
-    
+        self.default_status = 'offline'
+        self.default_thumb = 'static/girl.png'
         self.default_namecss = 'f0 c0'
     
         self.id = id
@@ -20,10 +20,8 @@ class User:
         self.hash = hash
         self.created = created
         self.lastlogin = lastlogin
-        self.status = status if status else 'offline'
-        #self.thumb = 'static/thumbs/' + name + '.jpg'
-        self.thumb = 'static/girl.png'
-        #self.namecss = namecss if namecss else 'f' + str(random.randint(0, 14)) + ' c' + str(random.randint(0, 16))
+        self.status = status if status else self.default_status
+        self.thumb = self.default_thumb
         self.namecss = namecss if namecss else self.default_namecss
         self.score = random.randint(0, 100)
     
@@ -93,6 +91,13 @@ class User:
         
     def passwordMatches(self, password):
         return bcrypt.hashpw(password, self.hash) == self.hash
+        
+    def publicInfo(self):
+        return dict(status=self.status,
+            name=self.name,
+            namecss=self.namecss,
+            thumb=self.thumb,
+            score=self.score)
         
     def save(self):
         result = db.execute("""

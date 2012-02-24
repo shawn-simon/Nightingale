@@ -1,7 +1,7 @@
 
 var camlib = function() {};
 
-camlib.prototype.index = function() {
+camlib.prototype.init = function() {
     var self = this;
     $(document).ready(function() {
         self.addEventHandlers();
@@ -44,6 +44,15 @@ camlib.prototype.addEventHandlers = function() {
             self.showLoginError('Try again later');
         });
     });
+    
+    $('.models .model .viewprofile').live('click', function(e) {
+        e.preventDefault();
+        $.get(e.currentTarget.href + '.json', function(data) {
+            if(data.profile) {
+                self.showProfile(data);
+            }
+        });
+    });
 };
 
 camlib.prototype.showLoginError = function(msg) {
@@ -56,29 +65,46 @@ camlib.prototype.showLoginError = function(msg) {
 camlib.prototype.reloadIndex = function() {
     var self = this;
     $.get('/.json', function(data) {
-        if(data.html) {
-            self.replaceHtml(data.html);
-        }
         if(data.models) {
-            self.updateModels(data.models);
+            self.showModelList(data.models);
         }
     });
 };
 
-camlib.prototype.updateModels = function(models) {
-    $('.models').html('');
+camlib.prototype.reloadProfile = function() {
+    var self = this;
+    $.get(window.location.href + '.json', function(data) {
+        if(data.profile) {
+            self.showProfile(data);
+        }
+    });
+};
+
+camlib.prototype.showModelList = function(models) {
     var html = '';
     $.each(models, function(i, item) {
         html += '<div class="model">'
              + '    <div class="img">'
-             + '        <a href="/' + item.name + '"><img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" /></a>'
+             + '        <a href="/' + item.name + '" class="viewprofile">'
+             +'             <img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" />'
+             +'         </a>'
              + '    </div>'
              + '    <div class="name">'
-             + '        <a href="/' + item.name + '" class="' + item.namecss + '">' + item.name + '</a>'
+             + '        <a href="/' + item.name + '" class="' + item.namecss + ' viewprofile">' + item.name + '</a>'
              + '    </div>'
              + '</div>';
     });
-    $('.models').append(html);
+    html = '<div class="models">' + html + '</div>';
+    $('.content').html(html);
+};
+
+camlib.prototype.showProfile = function(data) {
+    var user = data.user;
+    var profile = data.profile;
+    var html = '';
+    html += '<h2 class="' + user.namecss + '">' + profile.title + '</h2>';
+    html += '<p><img src="/static/camph.png" alt="" width="400" height="300" /></p>';
+    $('.content').html(html);
 };
 
 camlib.prototype.getPostVars = function(target) {

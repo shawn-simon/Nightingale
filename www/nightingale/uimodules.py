@@ -1,10 +1,6 @@
 from tornado.web import UIModule
 from nightingale.models import User
 
-class ListModelsModule(UIModule):
-    def render(self):
-        return self.render_string('module_homemodelslist.html', models=User.getOnlineModels())
-
 class UserInfoModule(UIModule):
     """Show current user info if logged in."""
     def render(self, user=None):

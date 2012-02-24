@@ -1,10 +1,9 @@
 ﻿from datetime import datetime, timedelta
-import simplejson as json
 import urllib
 from tornado.web import HTTPError, RequestHandler, StaticFileHandler
 from nightingale.models import EmptyObject, User
-from nightingale.uimodules import ListModelsModule, MicroLoginModule, UserInfoModule
-from nightingale.utils import jsonencode
+from nightingale.uimodules import MicroLoginModule, UserInfoModule
+from nightingale.utils import tojson
 
 def get_routes():
     return [
@@ -19,7 +18,8 @@ def get_routes():
         (r"/users/?\.json", UsersHandler, dict(context='json')),
         (r"/announce", VuzeHandler),
         (r"/scrape", VuzeHandler),
-        (r"/(.+)", ModelHandler)
+        (r"/(.[^/]+)/?\.json", ModelHandler, dict(context='json')),
+        (r"/(.[^/]+).*", ModelHandler)
     ]
 
     
@@ -35,9 +35,9 @@ class IndexHandler(BaseHandler):
     def get(self):
         if self.context == 'json':
             result = EmptyObject()
-            result.models = [model.__dict__ for model in User.getOnlineModels()]
+            result.models = [model.publicInfo() for model in User.getOnlineModels()]
             self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result, default=jsonencode))
+            self.write(tojson(result))
         else:
             self.render('index.html')
     
@@ -72,7 +72,7 @@ class LoginHandler(BaseHandler):
             result.html = []
             result.html.append(dict(target='.userinfo', html=usercontrol.render(user)))
             self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result, default=jsonencode))
+            self.write(tojson(result))
         else:
             self.redirect('/')
         
@@ -81,7 +81,7 @@ class LoginHandler(BaseHandler):
             result = EmptyObject()
             result.reason = reason
             self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result, default=jsonencode))
+            self.write(tojson(result))
         else:
             self.redirect('/?' + urllib.urlencode(dict(loginerr=reason)))
     
@@ -98,14 +98,26 @@ class LogoutHandler(BaseHandler):
             result.html = []
             result.html.append(dict(target='.userinfo', html=logincontrol.render(force=True)))
             self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result, default=jsonencode))
+            self.write(tojson(result))
         else:
             self.redirect('/')
     
     
 class ModelHandler(BaseHandler):
+    def initialize(self, context=None):
+        self.context = context
+    
     def get(self, name):
-        self.write('viewing model: ' + name)
+        user = User.getByName(name)
+        if self.context == 'json':
+            result = EmptyObject()
+            result.user = user.publicInfo()
+            result.profile = EmptyObject()
+            result.profile.title = user.name
+            self.set_header('Content-Type', 'application/json')
+            self.write(tojson(result))
+        else:
+            self.render('model.html')
     
     
 class UsersHandler(BaseHandler):
@@ -114,7 +126,7 @@ class UsersHandler(BaseHandler):
     
     def get(self):
         if self.context == 'json':
-            print 'json'
+            pass
         else:
             self.render('users.html', users=User.getAllUsers())
     
