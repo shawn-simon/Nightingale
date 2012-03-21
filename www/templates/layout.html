@@ -24,7 +24,11 @@
     </div>
       
     <div class="content">
-        {% block body %}Loading...{% end %}
+        {% block body %}
+            <div class="loading">Loading...</div>
+            <div class="activemodels"></div>
+            <div class="models"></div>
+        {% end %}
     </div>
 </div>
 <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>

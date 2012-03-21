@@ -5,19 +5,19 @@ def randusername():
     """Generate random username"""
     words = ['young', 'nova', 'swift', 'soft', 'lotus', 'sleep', 'french', 'pink',
              'smurf', 'hitch', 'flame', 'foryou', 'you', 'free', 'crafty', 'fan', 'sky',
-             'plump', 'fresh', 'panda', 'bear', 'boob', 'danger', 'within', 'dick', 'kids',
-             'zombie', 'horse', 'clue', 'glitter', 'pleasure', 'sheep', 'fuck', 'blaze',
+             'plump', 'fresh', 'panda', 'bear', 'part', 'danger', 'within', 'touch', 'kids',
+             'zombie', 'horse', 'clue', 'glitter', 'pleasure', 'sheep', 'hi', 'blaze',
              'girls', 'hard', 'hairless', 'hooker', 's', 'inator', 'inky', 'er', 'sugar',
-             'good', 'night', 'smoke', 'tail', 'shadow', 'ass', 'black', 'virgin', 'smart',
-             'guest', 'user', 'man', 'porn', 'daddy', 'big', 'fun', 'fire', 'nice', 'viewer',
+             'good', 'night', 'smoke', 'tail', 'shadow', 'ass', 'black', 'virgo', 'smart',
+             'guest', 'user', 'man', 'book', 'daddy', 'big', 'fun', 'fire', 'nice', 'viewer',
              'pocket', 'not', 'frisky', 'fox', 'fish', 'dragon', 'pony', 'punk', 'lick',
-             'trip', 'plauge', 'bugs', 'bunny', 'angel', 'pervert', 'bomb', 'trip',
-             'some', 'guy', 'hunny', 'happy', 'me', 'spread', 'stretch', 'slug', 'amazon',
+             'trip', 'plauge', 'bugs', 'bunny', 'angel', 'proverb', 'bomb', 'trip',
+             'some', 'guy', 'honey', 'happy', 'me', 'spread', 'stretch', 'slug', 'amazon',
              'idiot', 'click', 'death', 'bit', 'camel', 'fun', 'intense', 'cool', 'head',
-             'wag', 'devil', 'latex', 'dildo', 'purple', 'red', 'pussy', 'beast', 'candy',
-             'boom', 'disturbed', 'horny', 'scream', 'massive', 'lucky', 'player', 'love',
+             'wag', 'devil', 'latex', 'doe', 'purple', 'red', 'kitten', 'beast', 'candy',
+             'boom', 'disturbed', 'friendly', 'scream', 'massive', 'lucky', 'player', 'love',
              'lover', 'freak', 'cutie', 'army', 'master', 'nation', 'silly', 'dead', 'sin',
-             'cheek', 'smooth', 'pain', 'panther', 'lovely', 'cock', 'suck', 'cam']
+             'cheek', 'smooth', 'pain', 'panther', 'lovely', 'cook', 'stuck', 'cam']
     result = []
     if random() > 0.75:
         result.append(choice(['xx', 'xxx', 'xXx']))

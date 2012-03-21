@@ -81,12 +81,13 @@ camlib.prototype.reloadProfile = function() {
 };
 
 camlib.prototype.showModelList = function(models) {
+    $('.loading').hide();
     var html = '';
     $.each(models, function(i, item) {
         html += '<div class="model">'
              + '    <div class="img">'
              + '        <a href="/' + item.name + '" class="viewprofile">'
-             +'             <img src="' + item.thumb + '" width="100" height="100" alt="' + item.name + '" title="' + item.name + '" />'
+             +'             <img src="/static/camph.png" width="165" height="125" alt="' + item.name + '" title="' + item.name + '" />'
              +'         </a>'
              + '    </div>'
              + '    <div class="name">'
@@ -95,16 +96,17 @@ camlib.prototype.showModelList = function(models) {
              + '</div>';
     });
     html = '<div class="models">' + html + '</div>';
-    $('.content').html(html);
+    $('.models').html(html);
 };
 
 camlib.prototype.showProfile = function(data) {
+    $('.loading').hide();
     var user = data.user;
     var profile = data.profile;
-    var html = '';
-    html += '<h2 class="' + user.namecss + '">' + profile.title + '</h2>';
-    html += '<p><img src="/static/camph.png" alt="" width="400" height="300" /></p>';
-    $('.content').html(html);
+    var html = '<div class="model">';
+    html += '<div class="' + user.namecss + '">' + profile.title + '</div>';
+    html += '<img src="/static/camph.png" alt="" width="400" height="300" /></div>';
+    $('.activemodels').append(html);
 };
 
 camlib.prototype.getPostVars = function(target) {

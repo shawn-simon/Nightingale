@@ -9,7 +9,6 @@ from nightingale.models import User
 from nightingale.simulation import registerusers
         
 def create_users():
-    print "adding user 1/35..."
     User.addUser(name='kdeloach', password='qwerasdf', namecss='f2 c3')
     for n in range(34):
         print "adding user %d/35..." % (n+1)
